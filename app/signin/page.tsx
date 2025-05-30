@@ -1,9 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,16 +11,33 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { ArrowLeft } from "lucide-react"
+import { useSupabase } from "@/hooks/useSupabase"
+import { toast } from "sonner"
 
 export default function SignInPage() {
+  const router = useRouter()
+  const { signIn } = useSupabase()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle sign in logic here
-    console.log({ email, password, rememberMe })
+    setLoading(true)
+
+    try {
+      const { error } = await signIn(email, password)
+      if (error) throw error
+
+      toast.success("Signed in successfully")
+      router.push("/")
+      router.refresh()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to sign in")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -94,6 +111,7 @@ export default function SignInPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             <div className="space-y-2">
@@ -109,6 +127,7 @@ export default function SignInPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             <div className="flex items-center space-x-2">
@@ -116,13 +135,14 @@ export default function SignInPage() {
                 id="remember"
                 checked={rememberMe}
                 onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                disabled={loading}
               />
               <Label htmlFor="remember" className="text-sm">
                 Remember me
               </Label>
             </div>
-            <Button type="submit" className="w-full">
-              Sign In
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 
@@ -136,10 +156,10 @@ export default function SignInPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" disabled={loading}>
               Google
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" disabled={loading}>
               Apple
             </Button>
           </div>

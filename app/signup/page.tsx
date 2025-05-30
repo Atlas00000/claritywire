@@ -1,9 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,17 +11,39 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { ArrowLeft } from "lucide-react"
+import { useSupabase } from "@/hooks/useSupabase"
+import { toast } from "sonner"
 
 export default function SignUpPage() {
+  const router = useRouter()
+  const { signUp } = useSupabase()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [agreeTerms, setAgreeTerms] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle sign up logic here
-    console.log({ name, email, password, agreeTerms })
+    if (!agreeTerms) {
+      toast.error("Please agree to the terms and conditions")
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const { error } = await signUp(email, password)
+      if (error) throw error
+
+      toast.success("Account created successfully! Please check your email for verification.")
+      router.push("/")
+      router.refresh()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to create account")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -88,7 +110,14 @@ export default function SignUpPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} required />
+              <Input 
+                id="name" 
+                placeholder="John Doe" 
+                value={name} 
+                onChange={(e) => setName(e.target.value)} 
+                required 
+                disabled={loading}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -99,6 +128,7 @@ export default function SignUpPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             <div className="space-y-2">
@@ -109,6 +139,7 @@ export default function SignUpPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             <div className="flex items-center space-x-2">
@@ -117,6 +148,7 @@ export default function SignUpPage() {
                 checked={agreeTerms}
                 onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
                 required
+                disabled={loading}
               />
               <Label htmlFor="terms" className="text-sm">
                 I agree to the{" "}
@@ -129,8 +161,8 @@ export default function SignUpPage() {
                 </Link>
               </Label>
             </div>
-            <Button type="submit" className="w-full">
-              Create Account
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
 
@@ -144,10 +176,10 @@ export default function SignUpPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" disabled={loading}>
               Google
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" disabled={loading}>
               Apple
             </Button>
           </div>
