@@ -660,21 +660,32 @@ const FeatureTagsCloud = () => (
 const ShareMenu = ({ feature }: { feature: Feature }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const [currentUrl, setCurrentUrl] = useState('')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentUrl(window.location.href)
+    }
+  }, [])
 
   const shareOptions = {
-    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(feature.title)}&url=${encodeURIComponent(window.location.href)}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`,
-    copyLink: window.location.href
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(feature.title)}&url=${encodeURIComponent(currentUrl)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`,
+    copyLink: currentUrl
   }
 
   const handleShare = (type: keyof typeof shareOptions) => {
     if (type === 'copyLink') {
-      navigator.clipboard.writeText(shareOptions.copyLink)
-      setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000)
+      if (typeof window !== 'undefined') {
+        navigator.clipboard.writeText(shareOptions.copyLink)
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), 2000)
+      }
     } else {
-      window.open(shareOptions[type], '_blank')
+      if (typeof window !== 'undefined') {
+        window.open(shareOptions[type], '_blank')
+      }
     }
   }
 
@@ -737,11 +748,13 @@ export default function FeaturePage() {
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+    if (typeof window !== 'undefined') {
+      const handleScroll = () => {
+        setIsScrolled(window.scrollY > 50)
+      }
+      window.addEventListener('scroll', handleScroll)
+      return () => window.removeEventListener('scroll', handleScroll)
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (

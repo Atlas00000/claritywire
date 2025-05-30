@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: claritywire
+    env: node
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+    healthCheckPath: /
+    autoDeploy: true 

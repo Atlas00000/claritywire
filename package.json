@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start -p ${PORT:-3000}",
+    "lint": "next lint",
+    "postinstall": "next telemetry disable"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -38,11 +39,13 @@
     "@radix-ui/react-toggle": "latest",
     "@radix-ui/react-toggle-group": "latest",
     "@radix-ui/react-tooltip": "latest",
+    "@supabase/auth-helpers-nextjs": "^0.9.0",
     "@supabase/supabase-js": "^2.49.8",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "latest",
+    "critters": "^0.0.20",
     "date-fns": "latest",
     "embla-carousel-react": "latest",
     "framer-motion": "latest",
@@ -53,6 +56,7 @@
     "react": "^19",
     "react-day-picker": "latest",
     "react-dom": "^19",
+    "react-error-boundary": "^4.0.12",
     "react-hook-form": "latest",
     "react-resizable-panels": "latest",
     "recharts": "latest",

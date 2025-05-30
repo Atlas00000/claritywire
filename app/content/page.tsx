@@ -3,6 +3,7 @@
 import { Masthead } from "@/components/newspaper/masthead"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect, useRef, useCallback } from "react"
+import { ErrorBoundary } from 'react-error-boundary'
 import { 
   Newspaper,
   BookOpen,
@@ -32,6 +33,11 @@ import {
   ChevronLeft
 } from "lucide-react"
 import { BarChart } from "lucide-react"
+import dynamic from 'next/dynamic'
+
+// Dynamically import components that use window
+const ReadingProgress = dynamic(() => import('@/components/ReadingProgress'), { ssr: false })
+const ContentCarousel = dynamic(() => import('@/components/ContentCarousel'), { ssr: false })
 
 // Types
 type Content = {
@@ -635,110 +641,6 @@ const NewsletterSignup = () => {
   )
 }
 
-const ReadingProgress = () => {
-  const [progress, setProgress] = useState(0)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight
-      const progress = (window.scrollY / totalHeight) * 100
-      setProgress(progress)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  return (
-    <motion.div 
-      className="fixed top-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-700 z-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-    >
-      <motion.div 
-        className="h-full bg-blue-600"
-        style={{ width: `${progress}%` }}
-        transition={{ type: "spring", stiffness: 100 }}
-      />
-    </motion.div>
-  )
-}
-
-const ShareMenu = ({ content }: { content: Content }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isCopied, setIsCopied] = useState(false)
-
-  const shareOptions: ShareOptions = {
-    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(content.title)}&url=${encodeURIComponent(window.location.href)}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`,
-    copyLink: window.location.href
-  }
-
-  const handleShare = (type: keyof ShareOptions) => {
-    if (type === 'copyLink') {
-      navigator.clipboard.writeText(shareOptions.copyLink)
-      setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000)
-    } else {
-      window.open(shareOptions[type], '_blank')
-    }
-  }
-
-  return (
-    <div className="relative">
-      <motion.button
-        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <Share2 className="w-5 h-5" />
-      </motion.button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-          >
-            <button
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
-              onClick={() => handleShare('twitter')}
-            >
-              <Twitter className="w-4 h-4 mr-2" />
-              Twitter
-            </button>
-            <button
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
-              onClick={() => handleShare('facebook')}
-            >
-              <Facebook className="w-4 h-4 mr-2" />
-              Facebook
-            </button>
-            <button
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
-              onClick={() => handleShare('linkedin')}
-            >
-              <Linkedin className="w-4 h-4 mr-2" />
-              LinkedIn
-            </button>
-            <button
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
-              onClick={() => handleShare('copyLink')}
-            >
-              <LinkIcon className="w-4 h-4 mr-2" />
-              {isCopied ? 'Copied!' : 'Copy Link'}
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
 const ArticleStats = ({ content }: { content: Content }) => {
   return (
     <motion.div 
@@ -915,136 +817,6 @@ const SearchBar = () => {
   )
 }
 
-// Add ContentCarousel component
-const ContentCarousel = () => {
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const slides = [
-    {
-      title: "Featured Series",
-      items: [
-        {
-          title: "The Digital Revolution",
-          description: "Exploring the impact of technology on society",
-          image: "/images/articles/tech/digital-revolution.jpg"
-        },
-        {
-          title: "Future of Work",
-          description: "How work is changing in the 21st century",
-          image: "/images/articles/business/future-work.jpg"
-        },
-        {
-          title: "Climate Action",
-          description: "Solutions for a sustainable future",
-          image: "/images/articles/climate/climate-action.jpg"
-        }
-      ]
-    },
-    {
-      title: "Editor's Picks",
-      items: [
-        {
-          title: "Innovation in Education",
-          description: "New approaches to learning in the digital age",
-          image: "/images/articles/education/innovation.jpg"
-        },
-        {
-          title: "Sustainable Living",
-          description: "Practical steps towards a greener future",
-          image: "/images/articles/climate/sustainable-living.jpg"
-        },
-        {
-          title: "Tech Trends 2025",
-          description: "The technologies shaping our future",
-          image: "/images/articles/tech/tech-trends.jpg"
-        }
-      ]
-    }
-  ]
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length)
-  }
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
-  }
-
-  return (
-    <motion.div 
-      className="relative mb-8 overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-lg"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-serif font-bold">{slides[currentSlide].title}</h2>
-      </div>
-      
-      <div className="relative">
-        <motion.div 
-          className="flex transition-transform duration-500 ease-in-out"
-          animate={{ x: `-${currentSlide * 100}%` }}
-        >
-          {slides.map((slide, slideIndex) => (
-            <div 
-              key={slideIndex}
-              className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4 p-4"
-            >
-              {slide.items.map((item, itemIndex) => (
-                <motion.div
-                  key={itemIndex}
-                  className="relative overflow-hidden rounded-lg cursor-pointer group"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: itemIndex * 0.1 }}
-                  whileHover={{ y: -5 }}
-                >
-                  <img 
-                    src={item.image} 
-                    alt={item.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                    <h3 className="font-semibold mb-1">{item.title}</h3>
-                    <p className="text-sm opacity-90">{item.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ))}
-        </motion.div>
-
-        <button
-          onClick={prevSlide}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 shadow-lg"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 shadow-lg"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-      </div>
-
-      <div className="flex justify-center space-x-2 p-4">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              currentSlide === index 
-                ? 'bg-blue-500' 
-                : 'bg-gray-300 dark:bg-gray-600'
-            }`}
-          />
-        ))}
-      </div>
-    </motion.div>
-  )
-}
-
 // Add TrendingTopics component
 const TrendingTopics = () => {
   const topics = [
@@ -1108,63 +880,77 @@ const TrendingTopics = () => {
   )
 }
 
+// Add error fallback component
+function ErrorFallback({ error }: { error: Error }) {
+  return (
+    <div className="p-4 text-center">
+      <h2 className="text-xl font-bold text-red-600">Something went wrong:</h2>
+      <pre className="mt-2 text-sm text-gray-600">{error.message}</pre>
+    </div>
+  )
+}
+
 // Main Content Page Component
 export default function ContentPage() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    setIsClient(true)
   }, [])
 
+  const handleScroll = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      setIsScrolled(window.scrollY > 50)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll)
+      return () => window.removeEventListener('scroll', handleScroll)
+    }
+  }, [handleScroll])
+
+  if (!isClient) {
+    return null // or a loading state
+  }
+
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <ReadingProgress />
-      <motion.div 
-        className={`sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-sm transition-all duration-300 ${
-          isScrolled ? 'py-2' : 'py-4'
-        }`}
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Masthead />
-      </motion.div>
+        <main className="container mx-auto px-4 py-8">
+          <ContentHero />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-8">
+              <SearchBar />
+              <ContentCarousel />
+              
+              {mockContents.filter(content => content.isFeatured).map(content => (
+                <FeaturedContent key={content.id} content={content} />
+              ))}
+              
+              <ContentFilters />
+              
+              <ContentGrid 
+                contents={mockContents.filter(content => !content.isFeatured)} 
+                title="Latest Content" 
+              />
+            </div>
 
-      <div className="newspaper-container py-8">
-        <ContentHero />
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-8">
-            <SearchBar />
-            <ContentCarousel />
-            
-            {mockContents.filter(content => content.isFeatured).map(content => (
-              <FeaturedContent key={content.id} content={content} />
-            ))}
-            
-            <ContentFilters />
-            
-            <ContentGrid 
-              contents={mockContents.filter(content => !content.isFeatured)} 
-              title="Latest Content" 
-            />
+            {/* Sidebar */}
+            <div className="lg:col-span-4 space-y-6">
+              <TrendingTopics />
+              <TopContributors />
+              <ContentSeries />
+              <PopularCategories />
+              <NewsletterSignup />
+            </div>
           </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
-            <TrendingTopics />
-            <TopContributors />
-            <ContentSeries />
-            <PopularCategories />
-            <NewsletterSignup />
-          </div>
-        </div>
+        </main>
       </div>
-    </main>
+    </ErrorBoundary>
   )
 } 
