@@ -16,7 +16,6 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   reactStrictMode: true,
-  swcMinify: true,
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
