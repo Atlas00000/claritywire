@@ -1,0 +1,688 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 0% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 70%;
+    --radius: 0.5rem;
+
+    /* Custom variables for charts */
+    --text-color: #1a1a1a;
+    --border-color: #e0e0e0;
+    --card-bg: #ffffff;
+  }
+
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 90%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 90%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 90%;
+    --primary: 0 0% 90%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 90%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 90%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 30%;
+
+    /* Custom variables for charts */
+    --text-color: #e0e0e0;
+    --border-color: #333333;
+    --card-bg: #1a1a1a;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    background-image: url("/images/paper-texture.png");
+    background-repeat: repeat;
+  }
+
+  .dark body {
+    background-image: url("/images/dark-paper-texture.png");
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif font-bold;
+  }
+}
+
+/* Newspaper specific styles */
+.newspaper-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-card transition-colors duration-300;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid hsl(var(--border));
+}
+
+.newspaper-header {
+  @apply border-b border-border py-4 transition-colors duration-300;
+}
+
+.newspaper-masthead {
+  @apply text-center py-6 border-b border-border mb-6 transition-colors duration-300;
+}
+
+.newspaper-title {
+  @apply text-5xl md:text-7xl font-black tracking-tight text-center text-foreground transition-colors duration-300;
+  font-family: "Times New Roman", Times, serif;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.newspaper-subtitle {
+  @apply text-sm md:text-base font-medium mt-2 text-center text-foreground transition-colors duration-300;
+  font-style: italic;
+}
+
+.newspaper-date {
+  @apply text-xs md:text-sm font-medium mt-2 text-muted-foreground text-center transition-colors duration-300;
+}
+
+.newspaper-nav {
+  @apply flex justify-center space-x-6 py-4 border-t border-b border-border text-sm uppercase tracking-wider font-medium transition-colors duration-300;
+}
+
+.newspaper-nav-item {
+  @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
+}
+
+.newspaper-nav-item.active {
+  @apply text-foreground font-bold;
+}
+
+.newspaper-section {
+  @apply py-8;
+}
+
+.newspaper-section-title {
+  @apply text-2xl md:text-3xl font-bold mb-6 pb-2 border-b-2 border-foreground inline-block uppercase tracking-wide text-foreground transition-colors duration-300;
+}
+
+.newspaper-divider {
+  @apply my-8 border-t border-border relative transition-colors duration-300;
+}
+
+.newspaper-divider::after {
+  content: "• • •";
+  @apply absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted-foreground transition-colors duration-300;
+}
+
+.article-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.article-card {
+  @apply relative overflow-hidden border-b border-border pb-4 transition-all duration-300;
+}
+
+.article-card:hover {
+  @apply shadow-sm;
+  transform: translateY(-2px);
+}
+
+.article-category {
+  @apply text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 transition-colors duration-300;
+}
+
+.article-title {
+  @apply text-xl font-bold mb-2 leading-tight text-foreground hover:text-muted-foreground transition-colors duration-200;
+}
+
+.article-excerpt {
+  @apply text-sm text-muted-foreground mb-3 transition-colors duration-300;
+}
+
+.article-meta {
+  @apply text-xs text-muted-foreground flex items-center transition-colors duration-300;
+}
+
+.article-date {
+  @apply mr-3;
+}
+
+.article-author {
+  @apply font-medium;
+}
+
+.featured-article {
+  @apply border-b border-border pb-8 mb-8 transition-colors duration-300;
+}
+
+.featured-article .article-title {
+  @apply text-3xl md:text-4xl;
+}
+
+.featured-article .article-excerpt {
+  @apply text-base;
+}
+
+.column-layout {
+  column-count: 1;
+  @apply gap-6;
+}
+
+@media (min-width: 768px) {
+  .column-layout {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .column-layout {
+    column-count: 3;
+  }
+}
+
+.drop-cap:first-letter {
+  @apply float-left text-5xl font-bold mr-2 mt-1 text-foreground transition-colors duration-300;
+  line-height: 0.8;
+}
+
+.sidebar {
+  @apply border-l border-border pl-6 transition-colors duration-300;
+}
+
+.sidebar-title {
+  @apply text-lg font-bold mb-4 pb-2 border-b border-border text-foreground transition-colors duration-300;
+}
+
+.sidebar-item {
+  @apply mb-4 pb-4 border-b border-border last:border-0 last:pb-0 transition-colors duration-300;
+}
+
+.sidebar-item-title {
+  @apply text-sm font-bold mb-1 text-foreground hover:text-muted-foreground transition-colors duration-200;
+}
+
+.sidebar-item-meta {
+  @apply text-xs text-muted-foreground transition-colors duration-300;
+}
+
+.newspaper-footer {
+  @apply mt-12 pt-6 border-t border-border text-center text-sm text-muted-foreground transition-colors duration-300;
+}
+
+.newspaper-footer-divider {
+  @apply inline-block mx-2;
+}
+
+.breaking-news-banner {
+  @apply bg-foreground text-background py-2 px-4 text-center font-bold uppercase tracking-wider text-sm transition-colors duration-300;
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.moving-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.moving-image::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  z-index: 1;
+  animation: shimmer 3s infinite;
+}
+
+.dark .moving-image::before {
+  background: linear-gradient(45deg, rgba(50, 50, 50, 0.1) 0%, rgba(50, 50, 50, 0) 100%);
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.headline-animation {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.article-hover-effect {
+  transition: all 0.3s ease;
+}
+
+.article-hover-effect:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.dark .article-hover-effect:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.newspaper-ad {
+  @apply border border-border p-4 text-center my-6 bg-secondary transition-colors duration-300;
+}
+
+.newspaper-ad-title {
+  @apply text-sm font-bold uppercase tracking-wider mb-2 text-foreground transition-colors duration-300;
+}
+
+.newspaper-ad-content {
+  @apply text-sm text-muted-foreground transition-colors duration-300;
+}
+
+.newspaper-button {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-background bg-foreground hover:bg-muted-foreground focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground transition-colors duration-300;
+}
+
+.newspaper-button-outline {
+  @apply inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-foreground bg-background hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground transition-colors duration-300;
+}
+
+.newspaper-tabs {
+  @apply border-b border-border transition-colors duration-300;
+}
+
+.newspaper-tab {
+  @apply px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-muted-foreground whitespace-nowrap border-b-2 border-transparent transition-colors duration-300;
+}
+
+.newspaper-tab[data-state="active"] {
+  @apply text-foreground border-foreground font-semibold;
+}
+
+.newspaper-card-title {
+  @apply font-bold;
+}
+
+.paper-fold {
+  position: relative;
+}
+
+.paper-fold::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05));
+}
+
+.dark .paper-fold::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+}
+
+.paper-fold-left::after {
+  left: 33.33%;
+}
+
+.paper-fold-right::after {
+  right: 33.33%;
+}
+
+.trending-number {
+  @apply flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-foreground font-bold mr-3 transition-colors duration-300;
+}
+
+.classified-ad {
+  @apply p-3 border border-border text-sm transition-colors duration-300;
+}
+
+.classified-ad-title {
+  @apply font-bold mb-1 text-foreground transition-colors duration-300;
+}
+
+.classified-ad-content {
+  @apply text-muted-foreground transition-colors duration-300;
+}
+
+.classified-ad-contact {
+  @apply text-xs text-muted-foreground mt-2 transition-colors duration-300;
+}
+
+.weather-widget {
+  @apply border border-border p-4 rounded-md bg-secondary transition-colors duration-300;
+}
+
+.weather-title {
+  @apply text-sm font-bold mb-2 text-foreground transition-colors duration-300;
+}
+
+.weather-temp {
+  @apply text-2xl font-bold text-foreground transition-colors duration-300;
+}
+
+.weather-desc {
+  @apply text-sm text-muted-foreground transition-colors duration-300;
+}
+
+.weather-forecast {
+  @apply flex justify-between mt-4 text-xs;
+}
+
+.weather-day {
+  @apply text-center text-muted-foreground transition-colors duration-300;
+}
+
+.weather-icon {
+  @apply mx-auto mb-1 text-foreground transition-colors duration-300;
+}
+
+.contributor-portrait {
+  @apply relative overflow-hidden rounded-full w-12 h-12 mx-auto mb-2;
+}
+
+.contributor-portrait img {
+  @apply w-full h-full object-cover;
+  transition: transform 0.5s ease;
+}
+
+.contributor-portrait:hover img {
+  transform: scale(1.1);
+}
+
+.contributor-name {
+  @apply text-xs font-bold text-center text-foreground transition-colors duration-300;
+}
+
+.contributor-title {
+  @apply text-xs text-muted-foreground text-center transition-colors duration-300;
+}
+
+.newspaper-quote {
+  @apply italic text-xl border-l-4 border-border pl-4 my-6 text-foreground transition-colors duration-300;
+}
+
+.newspaper-quote-author {
+  @apply text-sm font-bold mt-2 text-foreground transition-colors duration-300;
+}
+
+.newspaper-quote-title {
+  @apply text-xs text-muted-foreground transition-colors duration-300;
+}
+
+/* Theme toggle styles */
+.theme-toggle {
+  @apply relative inline-flex items-center justify-center p-2 rounded-md bg-secondary text-foreground hover:bg-accent hover:text-accent-foreground transition-colors;
+}
+
+.theme-toggle-icon {
+  @apply w-5 h-5;
+}
+
+.theme-toggle-label {
+  @apply ml-2 text-xs font-medium;
+}
+
+.theme-switch {
+  @apply relative inline-flex h-6 w-11 items-center rounded-full border-2 border-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2;
+}
+
+.theme-switch[data-state="checked"] {
+  @apply bg-foreground;
+}
+
+.theme-switch[data-state="unchecked"] {
+  @apply bg-background;
+}
+
+.theme-switch-thumb {
+  @apply pointer-events-none block h-4 w-4 rounded-full bg-foreground shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0;
+}
+
+.theme-switch[data-state="checked"] .theme-switch-thumb {
+  @apply bg-background;
+}
+
+.theme-switch[data-state="unchecked"] .theme-switch-thumb {
+  @apply bg-foreground;
+}
+
+.newspaper-theme-toggle {
+  @apply flex items-center space-x-2 px-3 py-1 border border-border rounded-md bg-card;
+}
+
+.newspaper-theme-toggle-icon {
+  @apply w-4 h-4 text-foreground;
+}
+
+.newspaper-theme-toggle-text {
+  @apply text-xs font-medium text-foreground;
+}
+
+/* Top navigation */
+.top-nav {
+  @apply flex items-center justify-between py-2 px-4 border-b border-border;
+}
+
+.top-nav-item {
+  @apply text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 mx-2;
+}
+
+.top-nav-button {
+  @apply text-xs font-medium px-3 py-1 border border-border rounded-md bg-secondary hover:bg-accent transition-colors duration-200 mx-1;
+}
+
+/* Animated Headlines */
+.animated-headline-container {
+  @apply relative border border-border p-4 mb-8 bg-card transition-colors duration-300;
+}
+
+.animated-headline-category {
+  @apply text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 transition-colors duration-300;
+}
+
+.animated-headline-title {
+  @apply text-2xl md:text-3xl font-bold mb-4 text-foreground transition-colors duration-300;
+  min-height: 3rem;
+}
+
+.animated-headline-dots {
+  @apply flex justify-center space-x-2 mt-4;
+}
+
+.animated-headline-dot {
+  @apply inline-block w-2 h-2 rounded-full bg-muted-foreground transition-colors duration-300;
+}
+
+.animated-headline-dot.active {
+  @apply bg-foreground;
+}
+
+/* Interactive Chart */
+.interactive-chart {
+  @apply border border-border p-4 mb-8 bg-card transition-colors duration-300;
+}
+
+.interactive-chart-header {
+  @apply flex justify-between items-center mb-4;
+}
+
+.interactive-chart-title {
+  @apply text-xl font-bold text-foreground transition-colors duration-300;
+}
+
+.interactive-chart-expand-button {
+  @apply text-xs font-medium px-3 py-1 border border-border rounded-md bg-secondary hover:bg-accent transition-colors duration-200;
+}
+
+.interactive-chart-description {
+  @apply text-sm text-muted-foreground mb-4 transition-colors duration-300;
+}
+
+.interactive-chart-container {
+  @apply border border-border rounded-md overflow-hidden transition-colors duration-300;
+  height: 250px;
+}
+
+.interactive-chart-legend {
+  @apply grid grid-cols-2 md:grid-cols-3 gap-2 mt-4;
+}
+
+.interactive-chart-legend-item {
+  @apply flex items-center text-xs p-2 hover:bg-secondary rounded-md transition-colors duration-200 cursor-pointer;
+}
+
+.interactive-chart-legend-color {
+  @apply inline-block w-3 h-3 rounded-full mr-2;
+}
+
+.interactive-chart-legend-name {
+  @apply text-foreground mr-auto transition-colors duration-300;
+}
+
+.interactive-chart-legend-value {
+  @apply font-bold text-foreground transition-colors duration-300;
+}
+
+/* Search styles */
+.newspaper-search-button {
+  @apply p-2 rounded-md bg-secondary text-foreground hover:bg-accent hover:text-accent-foreground transition-colors;
+}
+
+.newspaper-search-container {
+  @apply absolute right-0 top-0 z-50;
+}
+
+.newspaper-search-input {
+  @apply w-full h-8 px-3 py-1 text-sm border border-border rounded-l-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-foreground transition-colors duration-300;
+}
+
+.newspaper-search-submit {
+  @apply h-8 px-3 bg-foreground text-background border border-foreground rounded-none hover:bg-muted-foreground transition-colors duration-200;
+}
+
+.newspaper-search-close {
+  @apply h-8 px-3 bg-secondary text-foreground border border-border rounded-r-md hover:bg-accent transition-colors duration-200;
+}
+
+.newspaper-search-results {
+  @apply absolute right-0 mt-1 w-full bg-card border border-border rounded-md shadow-lg overflow-hidden z-50 transition-colors duration-300;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.newspaper-search-results-title {
+  @apply text-xs font-bold uppercase tracking-wider p-3 border-b border-border bg-secondary text-foreground transition-colors duration-300;
+}
+
+.newspaper-search-results-list {
+  @apply py-1;
+}
+
+.newspaper-search-result-item {
+  @apply border-b border-border last:border-0 transition-colors duration-300;
+}
+
+.newspaper-search-result-link {
+  @apply block p-3 hover:bg-secondary transition-colors duration-200;
+}
+
+.newspaper-search-result-category {
+  @apply block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 transition-colors duration-300;
+}
+
+.newspaper-search-result-title {
+  @apply block text-sm font-medium text-foreground transition-colors duration-300;
+}
+
+/* Moving portraits */
+.moving-portrait {
+  @apply relative overflow-hidden rounded-full w-20 h-20 mx-auto mb-2 cursor-pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dark .moving-portrait {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.portrait-image {
+  @apply w-full h-full object-cover;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.portrait-overlay {
+  @apply absolute inset-0 bg-gradient-to-b from-transparent to-black/10 pointer-events-none;
+}
+
+.dark .portrait-overlay {
+  @apply from-transparent to-white/10;
+}
+
+.moving-portrait:hover .portrait-image {
+  transform: scale(1.1);
+}
+
+.moving-portrait:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.dark .moving-portrait:after {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
