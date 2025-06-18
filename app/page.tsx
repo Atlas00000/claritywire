@@ -12,6 +12,7 @@ import { ClassifiedAds } from "@/components/newspaper/classified-ads"
 import { AnimatedHeadline } from "@/components/newspaper/animated-headline"
 import { InteractiveChart } from "@/components/newspaper/interactive-chart"
 import { motion } from "framer-motion"
+import Image from "next/image"
 
 // Mock data
 const featuredArticle = {
@@ -429,192 +430,53 @@ const liveEvents = {
 
 export default function Home() {
   return (
-    <main>
-      <BreakingNewsTicker />
-      <div className="newspaper-container">
+    <main className="min-h-screen bg-[url('/images/paper-texture.png')] dark:bg-[url('/images/dark-paper-texture.png')] bg-repeat">
+      <div className="container mx-auto px-4 py-8">
         <Masthead />
-
-        <AnimatedHeadline headlines={animatedHeadlines} />
-
+        <BreakingNewsTicker />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
           <div className="lg:col-span-8">
-            <FeaturedArticle {...featuredArticle} />
-
-            <InteractiveChart
-              title="Economic Growth Trends (2025)"
-              description="Monthly economic indicators showing growth patterns across different sectors of the economy."
-              data={economicData}
-              features={{
-                showPredictions: true,
-                showSectorBreakdown: true,
-                showGrowthRates: true,
-                interactive: true,
-                animations: true,
-                tooltips: true,
-                zoom: true,
-                export: true
-              }}
-            />
-
-            <ArticleGrid title="Top Stories" articles={topStories} />
-
-            <div className="newspaper-divider"></div>
-
-            <ArticleGrid title="Politics" articles={politicsArticles} />
-
-            {/* New Market Insights Section */}
-            <motion.div
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <h2 className="text-2xl font-serif font-bold mb-6">{marketInsights.title}</h2>
-              <div className="space-y-4">
-                {marketInsights.items.map((item, index) => (
-                  <motion.div
-                    key={item.title}
-                    className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * index }}
-                  >
-                    <div>
-                      <h3 className="font-semibold">{item.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">{item.description}</p>
-                    </div>
-                    <div className={`text-lg font-bold ${item.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
-                      {item.change}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+            <FeaturedArticle article={featuredArticle} />
+            <ArticleGrid articles={topStories} title="Top Stories" />
+            <ArticleGrid articles={politicsArticles} title="Politics" />
           </div>
-
           <div className="lg:col-span-4">
             <TrendingSidebar items={trendingItems} />
-
-            <div className="mt-8">
-              <WeatherWidget 
-                data={weatherData}
-                features={{
-                  showForecast: true,
-                  showAlerts: true,
-                  showRadar: false,
-                  showHourly: false,
-                  showAirQuality: false,
-                  showSunMoon: true,
-                  animations: true,
-                  interactive: true,
-                  autoRefresh: true
-                }}
-              />
-            </div>
-
-            {/* New Trending Topics Widget */}
-            <motion.div
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mt-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <h2 className="text-xl font-serif font-bold mb-4">{trendingTopics.title}</h2>
-              <div className="space-y-4">
-                {trendingTopics.items.map((item, index) => (
-                  <motion.div
-                    key={item.title}
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * index }}
-                  >
-                    <div>
-                      <h3 className="font-medium">{item.title}</h3>
-                      <p className="text-sm text-gray-500">{item.category}</p>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {item.count.toLocaleString()} mentions
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* New Live Events Widget */}
-            <motion.div
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mt-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <h2 className="text-xl font-serif font-bold mb-4">{liveEvents.title}</h2>
-              <div className="space-y-4">
-                {liveEvents.items.map((item, index) => (
-                  <motion.div
-                    key={item.title}
-                    className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * index }}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">{item.title}</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        item.status === 'live' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {item.status}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>{item.time}</span>
-                      {item.status === 'live' && (
-                        <span className="flex items-center">
-                          <span className="w-2 h-2 bg-red-500 rounded-full mr-1 animate-pulse"></span>
-                          {item.viewers.toLocaleString()} watching
-                        </span>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            <div className="mt-8">
-              <NewspaperAd
-                title="SUBSCRIBE TODAY"
-                content="Get unlimited access to ClarityWire's award-winning journalism for just $4.99/month."
-                buttonText="Subscribe Now"
-                buttonLink="#"
-              />
-            </div>
+            <WeatherWidget 
+              data={weatherData}
+              features={{
+                showForecast: true,
+                showAlerts: true,
+                showRadar: false,
+                showHourly: false,
+                showAirQuality: false,
+                showSunMoon: true,
+                animations: true,
+                interactive: true,
+                autoRefresh: true
+              }}
+            />
+            <NewspaperAd />
           </div>
         </div>
-
         <ContributorProfiles contributors={contributors} />
-
         <ClassifiedAds ads={classifiedAds} />
-
-        <footer className="newspaper-footer">
-          <p>
-            © {new Date().getFullYear()} ClarityWire <span className="newspaper-footer-divider">|</span> All Rights
-            Reserved
-          </p>
-          <p className="mt-2">
-            <a href="#" className="mr-4 hover:underline">
-              About Us
-            </a>
-            <a href="#" className="mr-4 hover:underline">
-              Contact
-            </a>
-            <a href="#" className="mr-4 hover:underline">
-              Privacy Policy
-            </a>
-            <a href="#" className="mr-4 hover:underline">
-              Terms of Service
-            </a>
-          </p>
-        </footer>
+        <AnimatedHeadline headlines={animatedHeadlines} />
+        <InteractiveChart 
+          title="Economic Growth Trends (2025)"
+          description="Monthly economic indicators showing growth patterns across different sectors of the economy."
+          data={economicData}
+          features={{
+            showPredictions: true,
+            showSectorBreakdown: true,
+            showGrowthRates: true,
+            interactive: true,
+            animations: true,
+            tooltips: true,
+            zoom: true,
+            export: true
+          }}
+        />
       </div>
     </main>
   )
